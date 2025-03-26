@@ -39,8 +39,8 @@ jobs:
         context: .
         push: true
         tags: |
-          rag-app:latest
-          rag-app:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:${{ github.sha }}
 
   deploy:
     needs: build-push
