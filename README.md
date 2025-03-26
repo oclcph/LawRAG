@@ -9,3 +9,12 @@
 4. `vector.py`依据文档构建向量库并做持久化
 5. `main.py`为RAG逻辑脚本
 6. `test.py`用于调试
+
+常用命令：
+``` python
+# 测试RAG
+python main.py
+
+# 构建向量库
+python vector.py
+```
