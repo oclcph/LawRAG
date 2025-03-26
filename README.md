@@ -9,6 +9,7 @@
 4. `vector.py`依据文档构建向量库并做持久化
 5. `main.py`为RAG逻辑脚本
 6. `test.py`用于调试
+7. `downloads.py`用于下载Huggingface的预训练模型（如果本地无代理可以直接从Huggingface下载）
 
 常用命令：
 ``` python
