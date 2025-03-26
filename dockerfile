@@ -6,7 +6,7 @@ COPY . .
 RUN pip install -r requirements.txt
 
 # 下载预训练模型（建议提前放入镜像或使用Volume）
-RUN python -c "from sentence_transformers import SentenceTransformer; \
-    SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
+RUN python downloads.py
+RUN python vector.py
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0"]
