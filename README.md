@@ -19,3 +19,7 @@ python main.py
 # 构建向量库
 python vector.py
 ```
+``` sh
+# 后端启动
+uvicorn api:app --host 0.0.0.0 --port 8000
+```
