@@ -22,7 +22,7 @@ jobs:
   #       pip install -r requirements.txt
   
   build-push:
-    needs: lint-test
+    # needs: lint-test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
