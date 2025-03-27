@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM swr.ap-southeast-1.myhuaweicloud.com/cph/python:3.12
 
 WORKDIR /app
 COPY . .
