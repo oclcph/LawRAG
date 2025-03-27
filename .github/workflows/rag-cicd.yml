@@ -61,3 +61,4 @@ jobs:
             -p 8000:8000 \
             -v /law_db:/app/data \
             ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:latest
+
