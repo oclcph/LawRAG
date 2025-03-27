@@ -21,44 +21,50 @@ jobs:
   #     run: |
   #       pip install -r requirements.txt
   
-  build-push:
-    # needs: lint-test
+  build-transfer:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+    - name: Build Docker Image
+      run: |
+        docker build -t rag-app:latest .
 
-    - name: Build and push
-      uses: docker/build-push-action@v5
+    - name: Save Docker Image as .tar
+      run: |
+        docker save -o rag-app.tar rag-app:latest
+
+    - name: Transfer Image to Server via SCP
+      uses: appleboy/scp-action@v0.1.7
       with:
-        context: .
-        push: true
-        tags: |
-          ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:latest
-          ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:${{ github.sha }}
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        source: "rag-app.tar"
+        target: "/root"
 
   deploy:
-    needs: build-push
+    needs: build-transfer
     runs-on: ubuntu-latest
     steps:
-    - name: SSH Deploy
+    - name: Deploy via SSH
       uses: appleboy/ssh-action@v1
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
+        command_timeout: 600
         script: |
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:latest
+          # 进入服务器后，加载 Docker 镜像
+          docker load -i /home/${{ secrets.SERVER_USER }}/rag-app.tar
+
+          # 停止并删除旧容器（如果存在）
           docker stop rag-app || true
           docker rm rag-app || true
+
+          # 运行新容器
           docker run -d \
             --name rag-app \
             -p 8000:8000 \
             -v /law_db:/app/data \
-            ${{ secrets.DOCKER_HUB_USERNAME }}/rag-app:latest
-
+            rag-app:latest
